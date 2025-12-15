@@ -1,97 +1,103 @@
 #include "header.h"
 
-/* * PROGRAM UTAMA (MAIN)
- * Menggunakan Loop Menu interaktif
- */
-
 int main() {
-    // 1. Inisialisasi List Utama
     List L;
     createList(L);
 
-    // Variabel lokal untuk menampung input user
-    int pilihan = -1;
+    // Variabel untuk menampung input
+    int pilihan = 100; // Inisialisasi sembarang asal bukan 0
     string namaKantin, namaMenu;
     int harga, stok;
     adrKantin P_K;
     adrMenu P_M;
 
-    // Loop Menu Utama
+    // Loop berjalan selama pilihan bukan 0
     while (pilihan != 0) {
-        cout << "\n==========================================" << endl;
-        cout << "   SISTEM MONITORING STOK KANTIN KAMPUS   " << endl;
-        cout << "==========================================" << endl;
-        cout << "1.  Tambah Kantin (Insert Parent)" << endl;
-        cout << "2.  Tambah Menu ke Kantin (Insert Child)" << endl;
-        cout << "3.  Cari Data Kantin (Search Parent)" << endl;
-        cout << "4.  Tampilkan Menu Kantin Tertentu" << endl;
-        cout << "5.  Hapus Menu (Delete Child)" << endl;
-        cout << "6.  Hapus Kantin & Isinya (Delete Cascade)" << endl;
-        cout << "7.  Lihat Semua Data (Show All)" << endl;
-        cout << "8.  Hitung Jumlah Menu di Kantin" << endl;
-        cout << "9.  Laporan Stok Terbanyak/Tersedikit" << endl;
-        cout << "0.  Keluar" << endl;
-        cout << "==========================================" << endl;
-        cout << "Pilihan Anda: ";
+        cout << endl;
+        cout << "=== MENU KANTIN ===" << endl;
+        cout << "1. Tambah Kantin" << endl;
+        cout << "2. Tambah Menu" << endl;
+        cout << "3. Cari Kantin" << endl;
+        cout << "4. Lihat Menu Kantin" << endl;
+        cout << "5. Hapus Menu" << endl;
+        cout << "6. Hapus Kantin" << endl;
+        cout << "7. Lihat Semua Data" << endl;
+        cout << "8. Hitung Jumlah Menu" << endl;
+        cout << "9. Info Stok Terbanyak/Sedikit" << endl;
+        cout << "0. Keluar" << endl;
+        cout << "Pilih: ";
         cin >> pilihan;
         cout << endl;
 
-        switch (pilihan) {
-        case 1:
-            cout << "--- TAMBAH KANTIN ---" << endl;
-            cout << "Masukkan Nama Kantin: ";
+        if (pilihan == 1) {
+            cout << "Nama Kantin: ";
             cin >> namaKantin;
-            
-            // Alokasi dan Insert
             P_K = allocateKantin(namaKantin);
             insertKantin(L, P_K);
-            cout << "[OK] Kantin berhasil didaftarkan." << endl;
-            break;
-
-        case 2:
-            cout << "--- TAMBAH MENU ---" << endl;
-            // Validasi dulu apakah ada kantinnya (Opsional, tapi bagus untuk UX)
-            cout << "Masukkan Nama Kantin Tujuan: ";
+        
+        } else if (pilihan == 2) {
+            cout << "Nama Kantin Tujuan: ";
             cin >> namaKantin;
-            
-            // Cek keberadaan kantin (gunakan fungsi search yang sudah dibuat)
+            // Cek dulu apakah kantin ada
             if (searchKantin(L, namaKantin) != NULL) {
-                cout << "Masukkan Nama Menu: ";
+                cout << "Nama Menu: ";
                 cin >> namaMenu;
-                cout << "Masukkan Harga: ";
+                cout << "Harga: ";
                 cin >> harga;
-                cout << "Masukkan Stok: ";
+                cout << "Stok: ";
                 cin >> stok;
-
+                
                 P_M = allocateMenu(namaMenu, harga, stok);
                 insertMenuToKantin(L, namaKantin, P_M);
-                cout << "[OK] Menu berhasil ditambahkan." << endl;
-            } else {
-                cout << "[Gagal] Kantin tidak ditemukan. Buat kantin dulu." << endl;
-            }
-            break;
-
-        case 3:
-            cout << "--- CARI KANTIN ---" << endl;
-            cout << "Masukkan Nama Kantin: ";
-            cin >> namaKantin;
-            P_K = searchKantin(L, namaKantin);
-            if (P_K != NULL) {
-                cout << "Ditemukan! Kantin: " << P_K->namaKantin << endl;
             } else {
                 cout << "Kantin tidak ditemukan." << endl;
             }
-            break;
 
-        case 4:
-            cout << "--- LIHAT MENU PER KANTIN ---" << endl;
-            cout << "Masukkan Nama Kantin: ";
+        } else if (pilihan == 3) {
+            cout << "Nama Kantin dicari: ";
+            cin >> namaKantin;
+            P_K = searchKantin(L, namaKantin);
+            if (P_K != NULL) {
+                cout << "Kantin ditemukan." << endl;
+            } else {
+                cout << "Kantin tidak ditemukan." << endl;
+            }
+
+        } else if (pilihan == 4) {
+            cout << "Nama Kantin: ";
             cin >> namaKantin;
             showMenuByKantin(L, namaKantin);
-            break;
 
-        case 5:
-            cout << "--- HAPUS MENU ---" << endl;
-            cout << "Masukkan Nama Kantin: ";
+        } else if (pilihan == 5) {
+            cout << "Nama Kantin: ";
             cin >> namaKantin;
-            cout << "Masukkan Nama Menu yang dihapus: ";
+            cout << "Nama Menu dihapus: ";
+            cin >> namaMenu;
+            deleteMenuFromKantin(L, namaKantin, namaMenu);
+
+        } else if (pilihan == 6) {
+            cout << "Nama Kantin dihapus: ";
+            cin >> namaKantin;
+            deleteKantinCascade(L, namaKantin);
+
+        } else if (pilihan == 7) {
+            showAllData(L);
+
+        } else if (pilihan == 8) {
+            cout << "Nama Kantin: ";
+            cin >> namaKantin;
+            cout << "Jumlah Menu: " << countMenuInKantin(L, namaKantin) << endl;
+
+        } else if (pilihan == 9) {
+            showMinMaxStok(L);
+
+        } else if (pilihan == 0) {
+            cout << "Keluar program." << endl;
+            
+        } else {
+            cout << "Pilihan salah." << endl;
+        }
+    }
+
+    return 0;
+}
