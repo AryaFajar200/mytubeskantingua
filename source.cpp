@@ -5,14 +5,14 @@
 /* ================================================================ */
 
 void createList(List &L) {
-    L.first = NULL;
+    L.first = nullptr;
 }
 
 adrKantin allocateKantin(string nama) {
     adrKantin P = new elmKantin;
     P->namaKantin = nama;
-    P->next = NULL;
-    P->firstMenu = NULL; // Pastikan pointer child di-null-kan saat inisialisasi
+    P->next = nullptr;
+    P->firstMenu = nullptr;
     return P;
 }
 
@@ -21,7 +21,7 @@ adrMenu allocateMenu(string namaMenu, int harga, int stok) {
     P->info.namaMenu = namaMenu;
     P->info.harga = harga;
     P->info.stok = stok;
-    P->next = NULL;
+    P->next = nullptr;
     return P;
 }
 
@@ -30,11 +30,12 @@ adrMenu allocateMenu(string namaMenu, int harga, int stok) {
 /* ================================================================ */
 
 void insertLastKantin(List &L, adrKantin P) {
-    if (L.first == NULL) {
+    adrKantin Q;
+    if (L.first == nullptr) {
         L.first = P;
     } else {
-        adrKantin Q = L.first;
-        while (Q->next != NULL) {
+        Q = L.first;
+        while (Q->next != nullptr) {
             Q = Q->next;
         }
         Q->next = P;
@@ -42,11 +43,12 @@ void insertLastKantin(List &L, adrKantin P) {
 }
 
 void insertLastMenu(adrKantin K, adrMenu P) {
-    if (K->firstMenu == NULL) {
+    adrMenu Q;
+    if (K->firstMenu == nullptr) {
         K->firstMenu = P;
     } else {
-        adrMenu Q = K->firstMenu;
-        while (Q->next != NULL) {
+        Q = K->firstMenu;
+        while (Q->next != nullptr) {
             Q = Q->next;
         }
         Q->next = P;
@@ -55,33 +57,33 @@ void insertLastMenu(adrKantin K, adrMenu P) {
 
 void deleteFirstKantin(List &L, adrKantin &P) {
     P = L.first;
-    if (L.first != NULL) {
+    if (L.first != nullptr) {
         L.first = L.first->next;
-        P->next = NULL;
+        P->next = nullptr;
     }
 }
 
 void deleteAfterKantin(List &L, adrKantin Prec, adrKantin &P) {
     P = Prec->next;
-    if (P != NULL) {
+    if (P != nullptr) {
         Prec->next = P->next;
-        P->next = NULL;
+        P->next = nullptr;
     }
 }
 
 void deleteFirstMenu(adrKantin K, adrMenu &P) {
     P = K->firstMenu;
-    if (P != NULL) {
+    if (P != nullptr) {
         K->firstMenu = P->next;
-        P->next = NULL;
+        P->next = nullptr;
     }
 }
 
 void deleteAfterMenu(adrKantin K, adrMenu Prec, adrMenu &P) {
     P = Prec->next;
-    if (P != NULL) {
+    if (P != nullptr) {
         Prec->next = P->next;
-        P->next = NULL;
+        P->next = nullptr;
     }
 }
 
@@ -98,10 +100,10 @@ void insertKantin(List &L, adrKantin P) {
 // ATURAN: Tidak boleh ada return di dalam loop
 adrKantin searchKantin(List L, string namaKantin) {
     adrKantin P = L.first;
-    adrKantin foundKantin = NULL;
+    adrKantin foundKantin = nullptr;
     bool found = false;
 
-    while (P != NULL && !found) {
+    while (P != nullptr && !found) {
         if (P->namaKantin == namaKantin) {
             foundKantin = P;
             found = true; // Set flag untuk berhenti
@@ -114,8 +116,9 @@ adrKantin searchKantin(List L, string namaKantin) {
 
 // d. Menambahkan menu pada kantin
 void insertMenuToKantin(List &L, string namaKantin, adrMenu P) {
-    adrKantin K = searchKantin(L, namaKantin);
-    if (K != NULL) {
+    adrKantin K;
+    K = searchKantin(L, namaKantin);
+    if (K != nullptr) {
         insertLastMenu(K, P);
         // cout << "Menu berhasil ditambahkan ke " << namaKantin << endl;
     } else {
@@ -125,14 +128,16 @@ void insertMenuToKantin(List &L, string namaKantin, adrMenu P) {
 
 // e. Menampilkan menu dalam kantin tertentu
 void showMenuByKantin(List L, string namaKantin) {
-    adrKantin K = searchKantin(L, namaKantin);
-    if (K != NULL) {
+    adrKantin K;
+    K = searchKantin(L, namaKantin);
+    adrMenu M;
+    if (K != nullptr) {
         cout << "--- Daftar Menu Kantin: " << K->namaKantin << " ---" << endl;
-        adrMenu M = K->firstMenu;
-        if (M == NULL) {
+        M = K->firstMenu;
+        if (M == nullptr) {
             cout << "(Tidak ada menu)" << endl;
         }
-        while (M != NULL) {
+        while (M != nullptr) {
             cout << "- " << M->info.namaMenu 
                  << " | Rp " << M->info.harga 
                  << " | Stok: " << M->info.stok << endl;
@@ -147,12 +152,13 @@ void showMenuByKantin(List L, string namaKantin) {
 // f. Menghapus kantin beserta seluruh menunya (Delete Parent Cascade)
 void deleteKantinCascade(List &L, string namaKantin) {
     adrKantin P = L.first;
-    adrKantin Prec = NULL;
-    adrKantin target = NULL;
+    adrKantin Prec = nullptr;
+    adrKantin target = nullptr;
+    adrMenu M;
     bool found = false;
 
     // 1. Mencari Kantin (Parent) dan Predecessor-nya
-    while (P != NULL && !found) {
+    while (P != nullptr && !found) {
         if (P->namaKantin == namaKantin) {
             target = P;
             found = true;
@@ -165,18 +171,18 @@ void deleteKantinCascade(List &L, string namaKantin) {
     if (found) {
         // 2. Hapus seluruh Menu (Child) terlebih dahulu
         // Ini wajib dilakukan untuk menghindari memory leak (orphaned nodes)
-        adrMenu M = target->firstMenu;
+        M = target->firstMenu;
         adrMenu tempMenu;
-        while (M != NULL) {
+        while (M != nullptr) {
             tempMenu = M;
             M = M->next;
             delete tempMenu; // Dealokasi memori menu
         }
-        target->firstMenu = NULL;
+        target->firstMenu = nullptr;
 
         // 3. Putus relasi Parent dari List Utama
         adrKantin deletedNode;
-        if (Prec == NULL) {
+        if (Prec == nullptr) {
             // Hapus elemen pertama
             deleteFirstKantin(L, deletedNode);
         } else {
@@ -194,15 +200,17 @@ void deleteKantinCascade(List &L, string namaKantin) {
 
 // g. Menghapus menu dari kantin tertentu
 void deleteMenuFromKantin(List &L, string namaKantin, string namaMenu) {
-    adrKantin K = searchKantin(L, namaKantin);
+    adrKantin K;
+    adrrMenu M, PrecM;
+    K = searchKantin(L, namaKantin);
     
-    if (K != NULL) {
-        adrMenu M = K->firstMenu;
-        adrMenu PrecM = NULL;
+    if (K != nullptr) {
+        M = K->firstMenu;
+        PrecM = nullptr;
         bool foundMenu = false;
 
         // Cari menu di dalam list child
-        while (M != NULL && !foundMenu) {
+        while (M != nullptr && !foundMenu) {
             if (M->info.namaMenu == namaMenu) {
                 foundMenu = true;
             } else {
@@ -213,7 +221,7 @@ void deleteMenuFromKantin(List &L, string namaKantin, string namaMenu) {
 
         if (foundMenu) {
             adrMenu deletedMenu;
-            if (PrecM == NULL) {
+            if (PrecM == nullptr) {
                 // Hapus menu pertama
                 deleteFirstMenu(K, deletedMenu);
             } else {
@@ -232,19 +240,21 @@ void deleteMenuFromKantin(List &L, string namaKantin, string namaMenu) {
 
 // h. Menampilkan seluruh kantin dan daftar menunya
 void showAllData(List L) {
+    adrKantin K;
+    adrMenu M;
     cout << "\n========== DATA KANTIN KAMPUS ==========" << endl;
-    if (L.first == NULL) {
+    if (L.first == nullptr) {
         cout << "Data Kosong." << endl;
     } else {
-        adrKantin K = L.first;
-        while (K != NULL) {
+        K = L.first;
+        while (K != nullptr) {
             cout << "KANTIN: " << K->namaKantin << endl;
             
-            adrMenu M = K->firstMenu;
-            if (M == NULL) {
+            M = K->firstMenu;
+            if (M == nullptr) {
                 cout << "   (Belum ada menu)" << endl;
             }
-            while (M != NULL) {
+            while (M != nullptr) {
                 cout << "   -> " << M->info.namaMenu 
                      << "\t(Rp " << M->info.harga 
                      << ", Stok: " << M->info.stok << ")" << endl;
@@ -259,12 +269,14 @@ void showAllData(List L) {
 
 // i. Menghitung jumlah menu pada kantin tertentu
 int countMenuInKantin(List L, string namaKantin) {
+    adrKantin K;
+    adrMenu M;
     int count = 0;
-    adrKantin K = searchKantin(L, namaKantin);
+    K = searchKantin(L, namaKantin);
     
-    if (K != NULL) {
-        adrMenu M = K->firstMenu;
-        while (M != NULL) {
+    if (K != nullptr) {
+        M = K->firstMenu;
+        while (M != nullptr) {
             count++;
             M = M->next;
         }
@@ -274,10 +286,12 @@ int countMenuInKantin(List L, string namaKantin) {
 
 // j. Menampilkan kantin dengan total stok terbanyak dan tersedikit
 void showMinMaxStok(List L) {
-    if (L.first == NULL) {
+    adrKantin K;
+    adrMenu M;
+    if (L.first == nullptr) {
         cout << "Tidak ada data kantin untuk dianalisis." << endl;
     } else {
-        adrKantin K = L.first;
+        K = L.first;
         
         // Inisialisasi Min dan Max dengan data kantin pertama
         string maxKantinName = K->namaKantin;
@@ -289,7 +303,7 @@ void showMinMaxStok(List L) {
         
         // Hitung stok kantin pertama
         adrMenu firstM = K->firstMenu;
-        while(firstM != NULL){
+        while(firstM != nullptr){
             maxStok += firstM->info.stok;
             firstM = firstM->next;
         }
@@ -299,12 +313,12 @@ void showMinMaxStok(List L) {
         K = K->next; 
 
         // Loop sisa kantin
-        while (K != NULL) {
+        while (K != nullptr) {
             int currentTotalStok = 0;
-            adrMenu M = K->firstMenu;
+            M = K->firstMenu;
             
             // Hitung total stok di kantin saat ini
-            while (M != NULL) {
+            while (M != nullptr) {
                 currentTotalStok += M->info.stok;
                 M = M->next;
             }
