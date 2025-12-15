@@ -5,7 +5,7 @@ int main() {
     createList(L);
 
     // Variabel untuk menampung input
-    int pilihan = 100; // Inisialisasi sembarang asal bukan 0
+    int pilihan;
     string namaKantin, namaMenu;
     int harga, stok;
     adrKantin P_K;
