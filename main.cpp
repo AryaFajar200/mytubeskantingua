@@ -4,63 +4,73 @@ int main() {
     List L;
     createList(L);
 
-    // Variabel untuk menampung input
-    int pilihan = 100; // Inisialisasi sembarang asal bukan 0
-    string namaKantin, namaMenu;
-    int harga, stok;
+    int pilihan = -1; 
+    string namaKantin, namaMenu, kategori;
+    int harga, stok, statusInput;
+    bool isAvailable;
     adrKantin P_K;
     adrMenu P_M;
 
-    // Loop berjalan selama pilihan bukan 0
     while (pilihan != 0) {
         cout << endl;
-        cout << "=== MENU KANTIN ===" << endl;
+        cout << "=== SISTEM KANTIN ===" << endl;
         cout << "1. Tambah Kantin" << endl;
-        cout << "2. Tambah Menu" << endl;
+        cout << "2. Tambah Menu (Insert First)" << endl;
         cout << "3. Cari Kantin" << endl;
         cout << "4. Lihat Menu Kantin" << endl;
         cout << "5. Hapus Menu" << endl;
         cout << "6. Hapus Kantin" << endl;
         cout << "7. Lihat Semua Data" << endl;
         cout << "8. Hitung Jumlah Menu" << endl;
-        cout << "9. Info Stok Terbanyak/Sedikit" << endl;
-        cout << "0. Keluar" << endl;
+        cout << "9. Info Stok Min/Max" << endl;
+        cout << "0. Keluarrr" << endl;
         cout << "Pilih: ";
         cin >> pilihan;
         cout << endl;
 
         if (pilihan == 1) {
-            cout << "Nama Kantin: ";
+            cout << "Nama Kantin (tanpa spasi): ";
             cin >> namaKantin;
             P_K = allocateKantin(namaKantin);
-            insertKantin(L, P_K);
+            insertKantin(L, P_K); // Parent: Insert Last
         
         } else if (pilihan == 2) {
             cout << "Nama Kantin Tujuan: ";
             cin >> namaKantin;
-            // Cek dulu apakah kantin ada
+            
             if (searchKantin(L, namaKantin) != NULL) {
                 cout << "Nama Menu: ";
                 cin >> namaMenu;
+                cout << "Kategori (Makanan/Snack/Minuman): ";
+                cin >> kategori;
                 cout << "Harga: ";
                 cin >> harga;
                 cout << "Stok: ";
                 cin >> stok;
+                cout << "Status (1: Ada, 0: Habis): ";
+                cin >> statusInput;
+
+                // Konversi int ke bool
+                if (statusInput == 1) isAvailable = true;
+                else isAvailable = false;
                 
-                P_M = allocateMenu(namaMenu, harga, stok);
-                insertMenuToKantin(L, namaKantin, P_M);
+                // [REVISI POIN 2] Alokasi dengan data lengkap
+                P_M = allocateMenu(namaMenu, harga, stok, kategori, isAvailable);
+                
+                // [REVISI POIN 1] Ini akan memanggil Insert First
+                insertMenuToKantin(L, namaKantin, P_M); 
             } else {
                 cout << "Kantin tidak ditemukan." << endl;
             }
 
         } else if (pilihan == 3) {
-            cout << "Nama Kantin dicari: ";
+            cout << "Nama Kantin: ";
             cin >> namaKantin;
             P_K = searchKantin(L, namaKantin);
             if (P_K != NULL) {
-                cout << "Kantin ditemukan." << endl;
+                cout << "Ditemukan: " << P_K->namaKantin << endl;
             } else {
-                cout << "Kantin tidak ditemukan." << endl;
+                cout << "Tidak ditemukan." << endl;
             }
 
         } else if (pilihan == 4) {
@@ -92,7 +102,7 @@ int main() {
             showMinMaxStok(L);
 
         } else if (pilihan == 0) {
-            cout << "Keluar program." << endl;
+            cout << "Selesai." << endl;
             
         } else {
             cout << "Pilihan salah." << endl;
