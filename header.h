@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// --- DEFINISI TYPE DATA ---
 typedef struct elmKantin *adrKantin;
 typedef struct elmMenu *adrMenu;
 
@@ -13,78 +14,70 @@ struct infotypeMenu {
     string namaMenu;
     int harga;
     int stok;
-};
-
-struct infotypeKantin {
-    string namaKantin;
-    string namaPemilik; 
+    // [REVISI POIN 2] Atribut Tambahan
+    string kategori;    // Makanan Berat, Snack, Minuman
+    bool isAvailable;   // 1 (Tersedia) atau 0 (Habis/Tidak aktif)
 };
 
 struct elmMenu {
     infotypeMenu info;
-    adrMenu next;   
+    adrMenu next; 
 };
 
 struct elmKantin {
-    infotypeKantin info;
-    adrKantin next;   
-    adrMenu firstMenu;  
+    string namaKantin;
+    adrKantin next;      
+    adrMenu firstMenu;   
 };
 
-struct ListKantin {
+struct List {
     adrKantin first; 
 };
 
-
-
-
+// --- PRIMITIF DASAR ---
 void createList(List &L);
+// [REVISI POIN 2] Update parameter alokasi
+adrKantin allocateKantin(string nama);
+adrMenu allocateMenu(string namaMenu, int harga, int stok, string kategori, bool isAvailable);
 
-adrKantin createKantin(string nama, string pemilik);
+// --- FUNGSIONALITAS UTAMA ---
 
-adrMenu createMenu(string nama, int harga, int stok);
+// a. Menambahkan data kantin (Insert Parent - Tetap Insert Last)
+void insertKantin(List &L, adrKantin P); 
 
-
-/* a. MENAMBAHKAN DATA KANTIN (INSERT PARENT)
- * I.S. List L mungkin kosong.
- * F.S. P menjadi elemen terakhir di List L.
- */
-void insertKantin(List &L, adrKantin P);
-
-/* b. MENAMBAHKAN MENU KE KANTIN TERTENTU (INSERT CHILD)
- * I.S. namaKantin tujuan diketahui. P menu baru siap.
- * F.S. P menjadi menu baru di kantin tersebut.
- */
-void insertMenu(List &L, string namaKantin, adrMenu P);
-
-/* c. MENCARI KANTIN TERTENTU (SEARCH PARENT)
- * Mengembalikan address kantin jika ditemukan, nullptrptr jika tidak.
- */
+// c. Mencari kantin tertentu (Search Parent)
 adrKantin searchKantin(List L, string namaKantin);
 
-/* d. MENGHAPUS KANTIN BESERTA MENUNYA (DELETE PARENT CASCADE)
- * Menghapus node kantin dan seluruh node menu di bawahnya.
- */
-void deleteKantin(List &L, string namaKantin);
+// d. Menambahkan menu pada kantin (Insert Child - UBAH JADI INSERT FIRST)
+void insertMenuToKantin(List &L, string namaKantin, adrMenu P);
 
-/* e. MENGHAPUS MENU SPESIFIK (DELETE CHILD)
- * Menghapus satu menu tertentu dari kantin tertentu.
- */
-void deleteMenu(List &L, string namaKantin, string namaMenu);
+// e. Menampilkan menu dalam kantin tertentu
+void showMenuByKantin(List L, string namaKantin);
 
-/* f. MENAMPILKAN SELURUH DATA (SHOW ALL)
- * Menampilkan hirarki Kantin -> Menu.
- */
-void showAll(List L);
+// f. Menghapus kantin beserta seluruh menunya (Delete Parent Cascade)
+void deleteKantinCascade(List &L, string namaKantin);
 
-/* g. MENGHITUNG JUMLAH MENU
- * Mengembalikan total item menu pada satu kantin.
- */
-int countMenu(List L, string namaKantin);
+// g. Menghapus menu dari kantin tertentu
+void deleteMenuFromKantin(List &L, string namaKantin, string namaMenu);
 
-/* h. LAPORAN STOK (MIN/MAX)
- * Menampilkan kantin dengan total stok terbanyak dan tersedikit.
- */
-void showMinMaxStock(List L);
+// h. Menampilkan seluruh kantin dan daftar menunya
+void showAllData(List L);
+
+// i. Menghitung jumlah menu pada kantin tertentu
+int countMenuInKantin(List L, string namaKantin);
+
+// j. Menampilkan kantin dengan total stok terbanyak dan tersedikit
+void showMinMaxStok(List L);
+
+// --- FUNGSI BANTUAN (HELPER) ---
+void insertLastKantin(List &L, adrKantin P);
+
+// [REVISI POIN 1] Ubah helper child menjadi Insert First
+void insertFirstMenu(adrKantin K, adrMenu P);
+
+void deleteFirstKantin(List &L, adrKantin &P);
+void deleteAfterKantin(List &L, adrKantin Prec, adrKantin &P);
+void deleteFirstMenu(adrKantin K, adrMenu &P);
+void deleteAfterMenu(adrKantin K, adrMenu Prec, adrMenu &P);
 
 #endif
